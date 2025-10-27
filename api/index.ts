@@ -6,5 +6,3 @@ dotenv.config();
 const app = createApp();
 
 app.listen(8080);
-
-export default app;
