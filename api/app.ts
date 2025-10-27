@@ -16,6 +16,8 @@ export function createApp(): Koa {
     securityService: asValue(securityService),
   });
 
+  console.log(process.cwd());
+
   app
     .use(bodyParser())
     .use(scopePerRequest(container))
