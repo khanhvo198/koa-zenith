@@ -1,19 +1,14 @@
-import { createApp } from "./app";
 import dotenv from "dotenv";
-
-import Koa from "koa";
+import { createApp } from "./app";
 
 const startServer = async () => {
   try {
     dotenv.config();
 
-    const app: Koa = await createApp();
-    app.listen(8080);
+    await createApp();
   } catch (error) {
     console.log(error);
   }
 };
-
-startServer();
 
 export default startServer;
