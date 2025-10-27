@@ -5,7 +5,7 @@ import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import SecurityService from "./services/SercurityService";
 
-export async function createApp(): Promise<Koa> {
+export function createApp(): Koa {
   const app: Koa = new Koa();
 
   const prisma: PrismaClient = new PrismaClient();
