@@ -1,6 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { GET, route } from "awilix-koa";
+import { before, GET, inject, POST, route } from "awilix-koa";
 import { Context } from "koa";
+import AuthenticationMiddleware from "../middlewares/AuthenticationMiddleware";
+
+interface AddNewDeckRequest {
+  deckName: string;
+  emoji: string;
+}
 
 @route("/api/decks")
 export default class DeckController {
@@ -11,16 +17,29 @@ export default class DeckController {
   }
 
   @GET()
+  @before([inject(AuthenticationMiddleware)])
   async getDecks(ctx: Context) {
     const decks = await this._prisma.deck.findMany({
-      where: { authorId: "1" },
+      where: { authorId: ctx.state.user.id },
+      include: {
+        words: true,
+      },
     });
 
-    ctx.body = { decks };
+    const response = decks.map((deck) => ({
+      ...deck,
+      wordCount: deck.words.length,
+      mastered: deck.words.filter((word) => word.status === "MASTERED").length,
+    }));
+
+    console.log(response);
+
+    ctx.body = response;
   }
 
   @route("/:id")
   @GET()
+  @before([inject(AuthenticationMiddleware)])
   async getDeckById(ctx: Context) {
     const deck = await this._prisma.deck.findFirst({
       where: { id: ctx.params.id },
@@ -29,6 +48,23 @@ export default class DeckController {
       },
     });
 
-    ctx.body = { deck };
+    ctx.body = deck;
+  }
+
+  @POST()
+  @before([inject(AuthenticationMiddleware)])
+  async createDeck(ctx: Context) {
+    const { deckName, emoji } = ctx.request.body as AddNewDeckRequest;
+    const author = ctx.state.user;
+
+    const newDeck = await this._prisma.deck.create({
+      data: {
+        name: deckName,
+        authorId: author.id,
+        icon: emoji || "📖",
+      },
+    });
+
+    ctx.body = newDeck;
   }
 }

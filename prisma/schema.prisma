@@ -9,36 +9,53 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_MONGO_URL")
 }
 
 model User {
-  id              String  @id @default(uuid())
-  email           String  @unique
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  email           String          @unique
   name            String?
   password        String
   confirmPassword String?
   decks           Deck[]
+  RecentlyAdded   RecentlyAdded[]
 }
 
 model Deck {
-  id       String  @id @default(uuid())
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   authorId String
-  mastered Int?
   icon     String?
   author   User    @relation(fields: [authorId], references: [id])
   words    Word[]
 }
 
 model Word {
-  id           String @id @default(uuid())
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
   text         String
   phonetic     String
   partOfSpeech String
-  definitions  String
-  examples     String
-  deckId       String
-  deck         Deck   @relation(fields: [deckId], references: [id])
+  definition   String
+  example      String?
+  deckId       String @db.ObjectId
+  deck         Deck    @relation(fields: [deckId], references: [id])
+  status       WordStatus @default(NOT_YET)
+}
+
+enum WordStatus {
+  MASTERED
+  NOT_YET 
+}
+
+model RecentlyAdded {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  text         String
+  phonetic     String
+  partOfSpeech String
+  definition   String
+  example      String?
+  authorId     String @db.ObjectId
+  author       User    @relation(fields: [authorId], references: [id])
 }
