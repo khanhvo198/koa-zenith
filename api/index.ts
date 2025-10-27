@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import serverless from "serverless-http";
 import { createApp } from "./app";
 
 // const startServer = async () => {
@@ -21,3 +22,5 @@ dotenv.config();
 const app = createApp();
 
 app.listen(8080);
+
+export default serverless(app);
