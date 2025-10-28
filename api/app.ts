@@ -21,7 +21,11 @@ export function createApp(): Koa {
   app
     .use(bodyParser())
     .use(scopePerRequest(container))
-    .use(loadControllers("api/controllers/*.{ts,js}", { cwd: process.cwd() }));
+    .use(
+      loadControllers("api/controllers/*.{ts,js}", {
+        cwd: process.cwd(),
+      }),
+    );
 
   return app;
 }

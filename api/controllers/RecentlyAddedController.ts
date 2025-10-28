@@ -16,7 +16,7 @@ interface MoveWordRequest {
 
 @route("/api/recently_added")
 @before([inject(AuthenticationMiddleware)])
-export default class DeckController {
+export default class RecentlyAddedController {
   private _prisma: PrismaClient;
 
   constructor({ prisma }: { prisma: PrismaClient }) {
