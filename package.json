@@ -7,7 +7,7 @@
     "migrate": "npx prisma migrate dev",
     "postinstall": "prisma generate",
     "build": "tsc",
-    "start": "node build/api/index.js"
+    "start": "ts-node api/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "bcryptjs": "^3.0.2",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
+    "kcors": "^2.2.2",
     "koa": "^3.0.1",
     "koa-bodyparser": "^4.4.1",
     "openai": "^5.20.2",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/kcors": "^2.2.9",
     "@types/koa": "^3.0.1",
     "@types/koa-bodyparser": "^4.3.12",
     "@types/koa-router": "^7.4.9",

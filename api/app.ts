@@ -4,6 +4,7 @@ import { loadControllers, scopePerRequest } from "awilix-koa";
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import SecurityService from "./services/SercurityService";
+import cors from "kcors";
 
 export function createApp(): Koa {
   const app: Koa = new Koa();
@@ -19,6 +20,7 @@ export function createApp(): Koa {
   console.log(process.cwd());
 
   app
+    .use(cors())
     .use(bodyParser())
     .use(scopePerRequest(container))
     .use(
