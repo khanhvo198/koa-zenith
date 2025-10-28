@@ -5,7 +5,9 @@
   "scripts": {
     "start:dev": "nodemon --watch \"api/**/*.ts\" --exec \"ts-node\" api/index.ts",
     "migrate": "npx prisma migrate dev",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "build": "tsc",
+    "start": "node build/api/index.js"
   },
   "keywords": [],
   "author": "",
