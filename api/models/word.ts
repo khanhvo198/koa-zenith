@@ -5,4 +5,5 @@ export interface Word {
   definition: string;
   example?: string;
   deckId: string;
+  status: "NOT_YET" | "MASTERED";
 }

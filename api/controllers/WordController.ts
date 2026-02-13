@@ -1,11 +1,8 @@
-import { PrismaClient, WordStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { before, inject, PATCH, route } from "awilix-koa";
 import { Context } from "koa";
 import AuthenticationMiddleware from "../middlewares/AuthenticationMiddleware";
-
-interface UpdateWordStatusRequest {
-  status: WordStatus;
-}
+import { Word } from "../models/word";
 
 @route("/api/words")
 export default class WordController {
@@ -18,12 +15,38 @@ export default class WordController {
   @route("/:id")
   @PATCH()
   @before([inject(AuthenticationMiddleware)])
-  async updateWordStatus(ctx: Context) {
-    const { status } = ctx.request.body as UpdateWordStatusRequest;
+  async updateWord(ctx: Context) {
+    const patchWord = ctx.request.body as Word;
+
+    console.log(ctx.params.id);
+
+    const word = await this._prisma.word.findFirst({
+      where: {
+        id: ctx.params.id,
+      },
+    });
+
+    if (!word) {
+      throw new Error("Can not update");
+    }
+
+    const updateWord: Partial<Word> = {};
+
+    if (patchWord.status) {
+      updateWord.status = patchWord.status;
+    }
+
+    if (patchWord.definition) {
+      updateWord.definition = patchWord.definition;
+    }
+
+    if (patchWord.example) {
+      updateWord.example = patchWord.example;
+    }
 
     const wordUpdated = await this._prisma.word.update({
       data: {
-        status,
+        ...updateWord,
       },
       where: {
         id: ctx.params.id,
