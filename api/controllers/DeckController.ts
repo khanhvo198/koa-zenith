@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { before, GET, inject, POST, route } from "awilix-koa";
+import { before, DELETE, GET, inject, POST, route } from "awilix-koa";
 import { Context } from "koa";
 import AuthenticationMiddleware from "../middlewares/AuthenticationMiddleware";
 
@@ -66,5 +66,28 @@ export default class DeckController {
     });
 
     ctx.body = newDeck;
+  }
+
+  @DELETE()
+  @route("/:id")
+  @before([inject(AuthenticationMiddleware)])
+  async deleteDeck(ctx: Context) {
+    const { id } = ctx.params;
+
+    const response = await this._prisma.$transaction([
+      this._prisma.word.deleteMany({
+        where: {
+          deckId: id,
+        },
+      }),
+
+      this._prisma.deck.delete({
+        where: {
+          id,
+        },
+      }),
+    ]);
+
+    ctx.body = response;
   }
 }

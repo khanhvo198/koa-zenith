@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { before, inject, PATCH, route } from "awilix-koa";
+import { before, DELETE, inject, PATCH, route } from "awilix-koa";
 import { Context } from "koa";
 import AuthenticationMiddleware from "../middlewares/AuthenticationMiddleware";
 import { Word } from "../models/word";
@@ -10,6 +10,19 @@ export default class WordController {
 
   constructor({ prisma }: { prisma: PrismaClient }) {
     this._prisma = prisma;
+  }
+
+  @DELETE()
+  @route("/:id")
+  @before([inject(AuthenticationMiddleware)])
+  async deleteWord(ctx: Context) {
+    const res = await this._prisma.word.delete({
+      where: {
+        id: ctx.params.id,
+      },
+    });
+
+    ctx.body = res;
   }
 
   @route("/:id")
