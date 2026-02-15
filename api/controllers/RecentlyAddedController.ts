@@ -20,7 +20,6 @@ interface MoveWordRequest {
 }
 
 @route("/api/recently_added")
-@before([inject(AuthenticationMiddleware)])
 export default class RecentlyAddedController {
   private _prisma: PrismaClient;
 
@@ -222,6 +221,8 @@ export default class RecentlyAddedController {
       ...result,
       authorId: user?.id,
     }));
+
+    console.log(recentlyAdded);
 
     await this._prisma.recentlyAdded.createMany({
       data: recentlyAdded,

@@ -19,7 +19,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: info.selectionText }),
+        body: JSON.stringify({
+          text: info.selectionText,
+          email: "khanhvo198.y2k@gmail.com",
+        }),
       },
     );
 
