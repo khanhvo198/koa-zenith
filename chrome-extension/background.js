@@ -12,13 +12,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "sendWord" && info.selectionText) {
     console.log(info.selectionText);
     // Send the selected text to your server
-    await fetch("http://localhost:8080/api/recently_added", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    await fetch(
+      "https://koa-zenith.onrender.com/api/recently_added/extension",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: info.selectionText }),
       },
-      body: JSON.stringify({ text: info.selectionText }),
-    });
+    );
 
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },

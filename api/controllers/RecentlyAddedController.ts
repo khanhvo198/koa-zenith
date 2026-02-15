@@ -9,6 +9,11 @@ interface NewWordRequest {
   text: string;
 }
 
+interface NewWordRequestFromExtension {
+  text: string;
+  email: string;
+}
+
 interface MoveWordRequest {
   deckIds: string[];
   wordId: string;
@@ -181,6 +186,41 @@ export default class RecentlyAddedController {
     const recentlyAdded = results.map((result) => ({
       ...result,
       authorId: ctx.state.user.id,
+    }));
+
+    await this._prisma.recentlyAdded.createMany({
+      data: recentlyAdded,
+    });
+
+    ctx.body = results;
+  }
+
+  @route("/extension")
+  @POST()
+  async addNewWordFromExtension(ctx: Context) {
+    const body = ctx.request.body as NewWordRequestFromExtension;
+
+    const params = body.text.split(",");
+
+    const results: any[] = [];
+
+    for (const param of params) {
+      const result = await this.fetchWordFromDictionary(param);
+
+      if (typeof result === "string") {
+        continue;
+      }
+
+      results.push(this.simplifyResponse(result));
+    }
+
+    const user = await this._prisma.user.findFirst({
+      where: { email: body.email },
+    });
+
+    const recentlyAdded = results.map((result) => ({
+      ...result,
+      authorId: user?.id,
     }));
 
     await this._prisma.recentlyAdded.createMany({
