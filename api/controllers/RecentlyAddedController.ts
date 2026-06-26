@@ -5,7 +5,7 @@ import { DictionaryEntry } from "../models/api.type";
 import { Word } from "../models/word";
 import AuthenticationMiddleware from "../middlewares/AuthenticationMiddleware";
 
-interface NewWordRequest {
+export interface NewWordRequest {
   text: string;
 }
 
